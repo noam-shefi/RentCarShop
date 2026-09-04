@@ -42,19 +42,60 @@
                 type="button"
                 id="btnMic"
                 onclick="toggleRecording()"
+                aria-label="הקלטת קול"
+                title="לחץ כדי לדבר"
                 style="
-                    background-color:#ef4444;
-                    color:white;
-                    border:none;
+                    width:44px;
+                    height:44px;
+                    padding:0;
+                    display:inline-flex;
+                    align-items:center;
+                    justify-content:center;
+                    background:#ffffff;
+                    color:#111827;
+                    border:1px solid #d1d5db;
                     border-radius:50%;
-                    width:60px;
-                    height:60px;
-                    font-size:24px;
                     cursor:pointer;
-                    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+                    box-shadow:0 2px 6px rgba(0,0,0,0.08);
                     transition:all 0.2s ease;
-                ">
-                🎤
+                "
+                onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.borderColor='#9ca3af';"
+                onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#d1d5db';"
+            >
+                <svg
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M12 15C13.6569 15 15 13.6569 15 12V6C15 4.34315 13.6569 3 12 3C10.3431 3 9 4.34315 9 6V12C9 13.6569 10.3431 15 12 15Z"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M5 11C5 14.866 8.13401 18 12 18C15.866 18 19 14.866 19 11"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    />
+                    <path
+                        d="M12 18V21"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    />
+                    <path
+                        d="M9 21H15"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    />
+                </svg>
             </button>
 
             <!-- סטטוס -->
@@ -770,6 +811,6 @@
                 );
         }
 
-    <%--</script>--%>
+    </script>
 
 </asp:Content>
