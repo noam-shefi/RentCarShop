@@ -70,6 +70,13 @@ public partial class CarDetails : System.Web.UI.Page
         string imageUrl = (row["ImageUrl"] ?? "").ToString();
         string branchText = row["BranchName"] == DBNull.Value ? "לא צוין" : HttpUtility.HtmlEncode(row["BranchName"] + " (" + row["BranchCity"] + ")");
 
+        // מפרט טכני - עשוי להיות NULL עבור רכבים שטרם עודכנו
+        string seats = row["Seats"] != DBNull.Value ? row["Seats"].ToString() : "לא צוין";
+        string fuelType = row["FuelType"] != DBNull.Value ? HttpUtility.HtmlEncode(row["FuelType"].ToString()) : "לא צוין";
+        string rangeKm = row["RangeKm"] != DBNull.Value ? row["RangeKm"].ToString() + " ק\"מ" : "לא צוין";
+        string transmission = row["Transmission"] != DBNull.Value ? HttpUtility.HtmlEncode(row["Transmission"].ToString()) : "לא צוין";
+        string luggage = row["LuggageCapacity"] != DBNull.Value ? row["LuggageCapacity"].ToString() : "לא צוין";
+
         int stock = Convert.ToInt32(row["Stock"] ?? 0);
         int activeRentals = Convert.ToInt32(row["ActiveRentals"] ?? 0);
         int availableNow = Math.Max(0, stock - activeRentals);
@@ -127,6 +134,17 @@ public partial class CarDetails : System.Web.UI.Page
         html.Append("<p style='margin-bottom: 8px; color: #475569; font-size: 1rem;'><strong>דירוג:</strong> " + ratingText + "</p>");
         html.Append("<p style='margin-bottom: 8px; color: #475569; font-size: 1rem;'><strong>תיאור:</strong> " + description + "</p>");
         html.Append("<p style='margin-bottom: 8px; color: #475569; font-size: 1rem;'><strong>זמינים כרגע:</strong> " + availableNow + " מתוך " + stock + "</p>");
+
+        // ===== מפרט טכני - החלק החדש =====
+        html.Append("<div style='display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:18px 0; padding:16px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;'>");
+        html.Append("<div style='font-size:0.9rem; color:#334155;'>🪑 <strong>מושבים:</strong> " + seats + "</div>");
+        html.Append("<div style='font-size:0.9rem; color:#334155;'>⛽ <strong>סוג דלק:</strong> " + fuelType + "</div>");
+        html.Append("<div style='font-size:0.9rem; color:#334155;'>🛣️ <strong>טווח נסיעה:</strong> " + rangeKm + "</div>");
+        html.Append("<div style='font-size:0.9rem; color:#334155;'>⚙️ <strong>תיבת הילוכים:</strong> " + transmission + "</div>");
+        html.Append("<div style='font-size:0.9rem; color:#334155; grid-column: span 2;'>🧳 <strong>קיבולת מזוודות:</strong> " + luggage + "</div>");
+        html.Append("</div>");
+        // ===== סוף מפרט טכני =====
+
         html.Append("<div style='font-size: 2rem; font-weight: bold; color: #1e293b; margin: 20px 0;'>" + pricePerDay.ToString("C2") + " <span style='font-size: 1.1rem; color: #64748b; font-weight: normal;'>ליום</span></div>");
         html.Append("</div></div>");
 

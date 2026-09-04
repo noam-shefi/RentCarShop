@@ -38,7 +38,7 @@
 
     <p id="noLiveResults" style="display:none; text-align:center; padding:40px; font-size:16px; color:#64748b;">לא נמצאו רכבים התואמים לחיפוש שלך.</p>
 
-    <!-- הפעלת היומן המעוצב בשורת החיפוש -->0
+    <!-- הפעלת היומן המעוצב בשורת החיפוש -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             flatpickr("#<%= txtSearchStart.ClientID %>", {

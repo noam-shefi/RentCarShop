@@ -112,6 +112,23 @@ public partial class Cars : System.Web.UI.Page
                     if (!string.IsNullOrEmpty(branchCity)) html.Append("<p style='font-size:13px; color:#64748b; margin-bottom:4px;'>📍 " + branchCity + "</p>");
 
                     html.Append("<p style='font-size:13px; color:#64748b; margin-bottom:8px;'>" + ratingText + "</p>");
+
+                    // ===== התוספת של Claude: תגיות מפרט טכני בקטלוג =====
+                    string seats = row["Seats"] != DBNull.Value ? row["Seats"].ToString() : null;
+                    string fuelType = row["FuelType"] != DBNull.Value ? System.Web.HttpUtility.HtmlEncode(row["FuelType"].ToString()) : null;
+                    string transmission = row["Transmission"] != DBNull.Value ? System.Web.HttpUtility.HtmlEncode(row["Transmission"].ToString()) : null;
+
+                    if (seats != null || fuelType != null || transmission != null)
+                    {
+                        System.Collections.Generic.List<string> specParts = new System.Collections.Generic.List<string>();
+                        if (seats != null) specParts.Add("🪑 " + seats);
+                        if (fuelType != null) specParts.Add("⛽ " + fuelType);
+                        if (transmission != null) specParts.Add("⚙️ " + transmission);
+
+                        html.Append("<p style='font-size:12px; color:#64748b; margin-bottom:8px;'>" + string.Join(" &nbsp;|&nbsp; ", specParts) + "</p>");
+                    }
+                    // ===== סוף התוספת =====
+
                     html.Append("<p style='color:#475569; font-size:14px; margin-bottom:12px;'>" + System.Web.HttpUtility.HtmlEncode(description) + "</p>");
                     html.Append("<div class='card-price' style='color:#0f172a; font-weight:bold;'>" + pricePerDay.ToString("C2") + " <span style='font-size:13px; color:#64748b; font-weight:normal;'>/ יום</span></div>");
 
