@@ -17,6 +17,10 @@ namespace CarShop
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl resultBox;
 
         protected global::System.Web.UI.WebControls.Label lblResult;
+
+        protected global::System.Web.UI.WebControls.FileUpload fileUploadAudio;
+
+        protected global::System.Web.UI.WebControls.HiddenField hfAudioData;
     }
 
 }
