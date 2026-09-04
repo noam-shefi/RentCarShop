@@ -8,12 +8,10 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Script.Serialization;
 
-// העטיפה הזו הייתה חסרה וגרמה לשגיאה
 namespace CarShop
 {
     public partial class CarMatch : System.Web.UI.Page
     {
-        // הדבק כאן את המפתח החוקי שלך מ-Groq
         private const string GROQ_API_KEY = "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";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -51,7 +49,7 @@ namespace CarShop
                 string prompt = BuildPrompt(tripDetails, availableCars);
                 string aiResponseText = await SendRequestToGroqAsync(prompt);
 
-                lblResult.Text = HttpUtility.HtmlEncode(aiResponseText).Replace("\n", "<br/>");
+                lblResult.Text = aiResponseText.Replace("\n", "<br/>");
                 resultBox.Visible = true;
                 lblStatus.Text = "";
             }
@@ -65,12 +63,16 @@ namespace CarShop
         private List<string> GetAvailableCars()
         {
             List<string> carList = new List<string>();
-            DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Manufacturer, Model, Year, Price, Category FROM Cars WHERE Stock > 0");
+            // שימוש בעמודה הנכונה Id מתוך טבלת Cars
+            DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id, Manufacturer, Model, Year, Price, Category FROM Cars WHERE Stock > 0");
 
             foreach (DataRow row in dt.Rows)
             {
-                carList.Add(string.Format("{0} {1} ({2}) - קטגוריה: {3}, מחיר: {4:C2} ליום",
-                    row["Manufacturer"], row["Model"], row["Year"], row["Category"], Convert.ToDecimal(row["Price"])));
+                string carId = row["Id"].ToString();
+                string carDetails = string.Format("{0} {1} ({2}) - קטגוריה: {3}, מחיר: {4:C2} ליום",
+                    row["Manufacturer"], row["Model"], row["Year"], row["Category"], Convert.ToDecimal(row["Price"]));
+
+                carList.Add(carDetails + " [קישור לצפייה והזמנה: CarDetails.aspx?id=" + carId + "]");
             }
 
             return carList;
@@ -80,7 +82,7 @@ namespace CarShop
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("פרטי הטיול של הלקוח: " + tripDetails);
-            sb.AppendLine("רשימת הרכבים הזמינים במלאי:");
+            sb.AppendLine("רשימת הרכבים הזמינים במלאי (כולל תגית קישור מוכנה לשימוש לכל רכב):");
 
             foreach (string car in availableCars)
             {
@@ -104,11 +106,9 @@ namespace CarShop
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cleanApiKey);
                 client.Timeout = TimeSpan.FromSeconds(30);
 
-                // שלב 1: משיכת רשימה מלאה של כל המודלים הזמינים כרגע בשרת
                 List<string> modelsToTry = await GetAvailableModelsAsync(client, serializer);
                 string endpoint = "https://api.groq.com/openai/v1/chat/completions";
 
-                // שלב 2: ננסה כל מודל ברשימה. ברגע שאחד יעבוד - נחזיר את התשובה.
                 foreach (string modelId in modelsToTry)
                 {
                     var payload = new
@@ -116,16 +116,16 @@ namespace CarShop
                         model = modelId,
                         messages = new object[]
                         {
-                    new
-                    {
-                        role = "system",
-                        content = "אתה סוכן השכרת רכב מקצועי. תפקידך לבחור את הרכב המתאים ביותר מתוך הרשימה בהתאם לפרטי הטיול של הלקוח, ולכתוב הסבר מפורט וידידותי בעברית בלבד מדוע הוא הנבחר. חל איסור מוחלט להחזיר מספרים בודדים או קוד, אלא טקסט מילולי בלבד."
-                    },
-                    new
-                    {
-                        role = "user",
-                        content = userPrompt
-                    }
+                            new
+                            {
+                                role = "system",
+                                content = "אתה סוכן השכרת רכב מקצועי. תפקידך לבחור את הרכב המתאים ביותר מתוך הרשימה בהתאם לפרטי הטיול של הלקוח, ולכתוב הסבר מפורט וידידותי בעברית בלבד מדוע הוא הנבחר. חובה עליך להוציא בסוף התשובה תגית HTML תקינה של קישור (למשל: <a href='CarDetails.aspx?id=X'>לחץ כאן לצפייה והזמנת הרכב</a>) בהתבסס על הקישור שסופק ברשימת הרכבים עבור אותו רכב נבחר. חל איסור מוחלט להחזיר מספרים בודדים או קוד גולמי, אלא טקסט מילולי עשיר עם הקישור."
+                            },
+                            new
+                            {
+                                role = "user",
+                                content = userPrompt
+                            }
                         },
                         temperature = 0.7
                     };
@@ -138,14 +138,12 @@ namespace CarShop
                             HttpResponseMessage response = await client.PostAsync(endpoint, httpContent);
                             string responseBody = await response.Content.ReadAsStringAsync();
 
-                            // אם המודל עבד בהצלחה (והחשבון שלך מורשה אליו) - מחזירים את התשובה ויוצאים!
                             if (response.IsSuccessStatusCode)
                             {
                                 return ParseGroqResponse(responseBody, serializer);
                             }
                             else
                             {
-                                // אם אין הרשאה או שהמודל נכשל, שומרים את השגיאה וממשיכים מיד למודל הבא
                                 errorLog.Add("מודל " + modelId + " נדחה: " + responseBody);
                             }
                         }
@@ -157,11 +155,9 @@ namespace CarShop
                 }
             }
 
-            // נגיע לפה רק אם באמת אף מודל ב-Groq לא הסכים לקבל את המפתח שלך
             throw new Exception("כל המודלים נכשלו. ייתכן שיש בעיה בחשבון ה-Groq שלך. פירוט:\n" + string.Join("\n", errorLog));
         }
 
-        // מתודה מעודכנת שמחזירה רשימה שלמה של מודלים ולא רק אחד
         private async Task<List<string>> GetAvailableModelsAsync(HttpClient client, JavaScriptSerializer serializer)
         {
             List<string> validModels = new List<string>();
@@ -187,7 +183,6 @@ namespace CarShop
                                     string id = model["id"].ToString();
                                     string lowerId = id.ToLower();
 
-                                    // מסננים החוצה מודלי שמע, ראייה והגנה כדי להשאיר רק מודלי טקסט
                                     if (!lowerId.Contains("guard") && !lowerId.Contains("vision") &&
                                         !lowerId.Contains("whisper") && !lowerId.Contains("embed"))
                                     {
@@ -201,10 +196,8 @@ namespace CarShop
             }
             catch
             {
-                // במקרה של שגיאת רשת בשליפת המודלים נמשיך הלאה בשקט
             }
 
-            // גיבוי - אם הרשימה הדינמית לא עבדה משום מה, נטען שמות של מודלים קבועים
             if (validModels.Count == 0)
             {
                 validModels.AddRange(new string[] { "llama3-8b-8192", "mixtral-8x7b-32768", "gemma2-9b-it", "llama3-70b-8192" });
