@@ -1,0 +1,68 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="Site" %>
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>חנות הרכב שלי</title>
+    <link rel="stylesheet" type="text/css" href="CSS/StyleSheet.css?v=10" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+
+        <!-- ===== Header ===== -->
+        <header class="site-header">
+            <div class="header-container">
+                <div class="logo">
+                    <a href="Home.aspx">🚗 חנות הרכב שלי</a>
+                </div>
+                <!-- התפריט נבנה דינמית ב-Site.master.cs לפי מצב ה-Session -->
+                <nav class="navbar">
+                    <%= menu %>
+                </nav>
+            </div>
+        </header>
+
+        <!-- ===== Main content - כל דף שיורש מה-Master ישתול כאן את התוכן שלו ===== -->
+        <main class="main-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+        </main>
+
+        <!-- ===== Footer ===== -->
+        <footer class="site-footer">
+            <p>&copy; <%= DateTime.Now.Year %> חנות הרכב שלי - כל הזכויות שמורות</p>
+        </footer>
+
+    </form>
+
+    <!-- סקריפט קטן לפתיחה/סגירה של תפריט "פרופיל" הנפתח בניווט -->
+    <script>
+        function toggleDropdown(btn) {
+            var menu = btn.nextElementSibling;
+            var isOpen = menu.classList.contains('open');
+
+            // סוגר כל תפריט נפתח אחר שפתוח (למקרה שיהיו כמה בעתיד)
+            document.querySelectorAll('.nav-dropdown-menu.open').forEach(function (m) {
+                m.classList.remove('open');
+            });
+
+            if (!isOpen) {
+                menu.classList.add('open');
+            }
+        }
+
+        // סוגר את התפריט הנפתח אם לוחצים במקום כלשהו מחוץ לו
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.nav-dropdown-menu.open').forEach(function (m) {
+                    m.classList.remove('open');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
