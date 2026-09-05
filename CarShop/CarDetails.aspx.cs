@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.Net.Mail;
@@ -326,8 +327,10 @@ public partial class CarDetails : System.Web.UI.Page
 
     private void SendEmailReceipt(string toEmail, DateTime start, DateTime end, decimal total)
     {
-        string fromEmail = "noam.shefi10@gmail.com";
-        string appPassword = "dsbx atka jzov ugem";
+        string fromEmail = ConfigurationManager.AppSettings["SmtpFromEmail"];
+        string appPassword = ConfigurationManager.AppSettings["SmtpAppPassword"];
+        string smtpHost = ConfigurationManager.AppSettings["SmtpHost"];
+        int smtpPort = int.Parse(ConfigurationManager.AppSettings["SmtpPort"]);
         string carName = ((System.Web.UI.WebControls.Label)((System.Web.UI.WebControls.ContentPlaceHolder)Master.FindControl("MainContent")).FindControl("lblModalCar")).Text;
 
         MailMessage mail = new MailMessage();
@@ -338,7 +341,7 @@ public partial class CarDetails : System.Web.UI.Page
         mail.IsBodyHtml = true;
 
         System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-        SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+        SmtpClient smtp = new SmtpClient("smtpHost", smtpPort);
         smtp.UseDefaultCredentials = false;
         smtp.Credentials = new System.Net.NetworkCredential(fromEmail, appPassword);
         smtp.EnableSsl = true;
