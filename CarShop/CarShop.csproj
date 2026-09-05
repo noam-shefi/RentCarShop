@@ -133,7 +133,6 @@
     <Content Include="QUICK_START_GUIDE.txt" />
     <Content Include="README.txt" />
     <Content Include="Register.aspx" />
-    <Content Include="Register_New.aspx" />
     <Content Include="UpdateProfile.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
