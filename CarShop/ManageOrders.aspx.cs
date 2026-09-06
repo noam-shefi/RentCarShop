@@ -134,7 +134,7 @@ public partial class ManageOrders : System.Web.UI.Page
             {
                 html.Append("<a href='ManageOrders.aspx?action=approve_cancel&id=" + orderId + "' " +
                             "onclick=\"return confirm('לאשר את בקשת הביטול של הלקוח?');\" " +
-                            "style='display:inline-block; padding:6px 12px; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; margin-left:6px;'>אשר ביטול</a>");
+                            "style='display:inline-block; padding:6px 12px; background:var(--color-destructive-soft); color:var(--color-destructive); border:1px solid var(--color-destructive-border); border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; margin-left:6px;'>אשר ביטול</a>");
 
                 html.Append("<a href='ManageOrders.aspx?action=reject_cancel&id=" + orderId + "' " +
                             "onclick=\"return confirm('לדחות את בקשת הביטול ולהשאיר את ההזמנה פעילה?');\" " +
@@ -145,11 +145,11 @@ public partial class ManageOrders : System.Web.UI.Page
             {
                 html.Append("<a href='ManageOrders.aspx?action=approve&id=" + orderId + "' " +
                             "onclick=\"return confirm('לאשר את ההזמנה?');\" " +
-                            "style='display:inline-block; padding:6px 12px; background:#f0e8e8; color:#8b6b6b; border:1px solid #e5d5d5; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; margin-left:6px;'>אשר</a>");
+                            "style='display:inline-block; padding:6px 12px; background:#e8f3ec; color:#35634a; border:1px solid #b9d8c2; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; margin-left:6px;'>אשר</a>");
 
                 html.Append("<a href='ManageOrders.aspx?action=reject&id=" + orderId + "' " +
                             "onclick=\"return confirm('לדחות את ההזמנה?');\" " +
-                            "style='display:inline-block; padding:6px 12px; background:#fee2e2; color:#e53e3e; border:1px solid #fecaca; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; margin-left:6px;'>דחה</a>");
+                            "style='display:inline-block; padding:6px 12px; background:var(--color-destructive-soft); color:var(--color-destructive); border:1px solid var(--color-destructive-border); border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; margin-left:6px;'>דחה</a>");
 
                 html.Append("<a href='ManageOrders.aspx?action=cancel&id=" + orderId + "' " +
                             "onclick=\"return confirm('לבטל את ההזמנה?');\" " +

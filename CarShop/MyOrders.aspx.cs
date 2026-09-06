@@ -112,7 +112,7 @@ public partial class MyOrders : System.Web.UI.Page
             string statusColor = "#475569";
             if (status == "מאושר") statusColor = "#16a34a"; // ירוק
             if (status == "ממתין") statusColor = "#475569"; // אפור
-            if (status == "בוטל" || status == "נדחה") statusColor = "#e53e3e"; // אדום
+            if (status == "בוטל" || status == "נדחה") statusColor = "#8b6b6b"; // מאווב-ורוד
             if (status == "בקשת ביטול") statusColor = "#475569"; // אפור
 
             html.Append("<tr>");
@@ -142,7 +142,7 @@ public partial class MyOrders : System.Web.UI.Page
             }
             else if (status == "בקשת ביטול")
             {
-                html.Append("<span style='background-color:#fee2e2; color:#dc2626; padding:6px 10px; border-radius:6px; font-size:13px; font-weight:600;'>הבקשה בהמתנה למנהל</span>");
+                html.Append("<span style='background-color:var(--color-destructive-soft); color:var(--color-destructive); border:1px solid var(--color-destructive-border); padding:6px 10px; border-radius:6px; font-size:13px; font-weight:600;'>הבקשה בהמתנה למנהל</span>");
             }
             else if (isCompleted && !hasReview)
             {

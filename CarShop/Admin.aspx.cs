@@ -162,10 +162,10 @@ public partial class Admin : System.Web.UI.Page
                             "class='btn admin-btn' style='background-color:#64748b; color:#fff; border:none; padding:8px 14px; border-radius:6px; font-weight:600; text-decoration:none;'>הסר ניהול</a>");
             }
 
-            // Delete button (slight red background)
+            // Delete button (soft mauve background)
             html.Append("<a href='Admin.aspx?action=delete&id=" + id + "' " +
                         "onclick=\"return confirm('למחוק את המשתמש? הפעולה אינה הפיכה.');\" " +
-                        "class='btn admin-btn' style='background-color:#fee2e2; color:#e53e3e; border:none; padding:8px 14px; border-radius:6px; font-weight:600; text-decoration:none;'>מחק</a>");
+                        "class='btn admin-btn' style='background-color:var(--color-destructive-soft); color:var(--color-destructive); border:1px solid var(--color-destructive-border); padding:8px 14px; border-radius:6px; font-weight:600; text-decoration:none;'>מחק</a>");
 
             html.Append("</div></td>");
             html.Append("</tr>");
