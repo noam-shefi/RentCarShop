@@ -27,7 +27,7 @@
                 </div>
             </div>
             
-            <asp:Label ID="lblRentMessage" runat="server" CssClass="error-message" style="display:block; margin-top:8px; color:#ef4444; font-weight:600;"></asp:Label>
+            <asp:Label ID="lblRentMessage" runat="server" CssClass="error-message" style="display:block; margin-top:8px; color:#8b6b6b; font-weight:600;"></asp:Label>
         </div>
 
         <!-- הצגת פרטי הרכב, התמונה ושורת הכפתורים -->
@@ -35,9 +35,9 @@
 
         <!-- כפתור ההשכרה הישיר של ASP.NET ושאר הכפתורים -->
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:20px;">
-            <asp:Button ID="btnRent" runat="server" Text="השכר רכב זה" OnClick="btnRent_Click" CssClass="btn" Style="background-color:#1e293b; color:#fff; font-weight:600;" />
+            <asp:Button ID="btnRent" runat="server" Text="השכר רכב זה" OnClick="btnRent_Click" CssClass="btn" Style="background-color:#52667a; color:#fff; font-weight:600;" />
             <asp:Literal ID="ltrFavButton" runat="server"></asp:Literal>
-            <a href="Cars.aspx" class="btn" style="background:#64748b; color:#fff;">חזרה לקטלוג</a>
+            <a href="Cars.aspx" class="btn" style="background:#718397; color:#fff;">חזרה לקטלוג</a>
         </div>
     </div>
 
@@ -58,9 +58,9 @@
             <asp:Label ID="lblModalError" runat="server" ForeColor="Red" style="display:block; margin-top:10px;"></asp:Label>
 
             <div class="card-actions" style="margin-top:25px; display:flex; gap:10px; justify-content:space-between;">
-                <asp:Button ID="btnConfirmOrder" runat="server" Text="אשר הזמנה" CssClass="btn btn-main" OnClick="btnConfirmOrder_Click" style="background:#1e293b; color:#fff;" />
-                <asp:Button ID="btnConfirmAndEmail" runat="server" Text="אשר ושלח למייל" CssClass="btn btn-edit" OnClick="btnConfirmAndEmail_Click" style="background:#475569; color:#fff;" />
-                <asp:Button ID="btnCancelModal" runat="server" Text="חזור" CssClass="btn btn-delete" OnClick="btnCancelModal_Click" style="background:#64748b; color:#fff;" />
+                <asp:Button ID="btnConfirmOrder" runat="server" Text="אשר הזמנה" CssClass="btn btn-main" OnClick="btnConfirmOrder_Click" style="background:#52667a; color:#fff;" />
+                <asp:Button ID="btnConfirmAndEmail" runat="server" Text="אשר ושלח למייל" CssClass="btn btn-edit" OnClick="btnConfirmAndEmail_Click" style="background:#d8caca; color:#2c3e50;" />
+                <asp:Button ID="btnCancelModal" runat="server" Text="חזור" CssClass="btn btn-delete" OnClick="btnCancelModal_Click" style="background:#8b6b6b; color:#fff;" />
             </div>
         </div>
     </div>
@@ -71,7 +71,7 @@
             <div style="font-size: 48px; color: #16a34a; margin-bottom: 15px;">✓</div>
             <h2 style="border: none; color: #1e293b;">ההזמנה בוצעה בהצלחה!</h2>
             <p style="color: #64748b; margin-bottom: 25px;">בקשת ההשכרה שלך נקלטה במערכת בהצלחה.</p>
-            <a href="Cars.aspx" class="btn btn-main" style="display: inline-block; padding: 10px 25px; text-decoration: none; background:#1e293b;">חזרה לקטלוג הרכבים</a>
+            <a href="Cars.aspx" class="btn btn-main" style="display: inline-block; padding: 10px 25px; text-decoration: none; background:#52667a;">חזרה לקטלוג הרכבים</a>
         </div>
     </div>
 

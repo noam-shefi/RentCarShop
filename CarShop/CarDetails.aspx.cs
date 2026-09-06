@@ -169,7 +169,7 @@ public partial class CarDetails : System.Web.UI.Page
             int userId = GetUserIdByUsername(Session["user"].ToString());
             bool isFavorite = userId != 0 && MyAdoHelper.ExecuteDataTable("SELECT Id FROM Favorites WHERE UserId = " + userId + " AND CarId = " + _carId).Rows.Count > 0;
             string favLabel = isFavorite ? "💔 הסר מהמועדפים" : "🤍 הוסף למועדפים";
-            ltrFavBtn.Text = "<a href='CarDetails.aspx?id=" + _carId + "&action=togglefav' class='btn' style='background:#475569; color:#fff;'>" + favLabel + "</a>";
+            ltrFavBtn.Text = "<a href='CarDetails.aspx?id=" + _carId + "&action=togglefav' class='btn' style='background:#718397; color:#fff;'>" + favLabel + "</a>";
             ltrFavBtn.Visible = true;
         }
         else if (ltrFavBtn != null)

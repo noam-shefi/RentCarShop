@@ -219,7 +219,7 @@
         .wave {
             width:4px;
             height:8px;
-            background:#64748b;
+            background:#718397;
             border-radius:10px;
             transition:height .08s ease, background .15s ease;
         }

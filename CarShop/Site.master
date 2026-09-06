@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>חנות הרכב שלי</title>
-    <link rel="stylesheet" type="text/css" href="CSS/StyleSheet.css?v=10" />
+    <link rel="stylesheet" type="text/css" href="CSS/StyleSheet.css?v=11" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server">
     </asp:ContentPlaceHolder>
 </head>

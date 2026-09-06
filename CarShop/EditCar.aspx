@@ -68,6 +68,6 @@
         <asp:Label ID="lblMessage" runat="server" CssClass="success-message"></asp:Label>
         <br />
         <asp:Button ID="btnSave" runat="server" Text="שמור שינויים" CssClass="btn" OnClick="btnSave_Click" />
-        <a href="Cars.aspx" class="btn" style="background:#555;color:#fff;display:inline-block;margin-top:12px;">חזרה לקטלוג</a>
+        <a href="Cars.aspx" class="btn" style="background:#718397;color:#fff;display:inline-block;margin-top:12px;">חזרה לקטלוג</a>
     </div>
 </asp:Content>

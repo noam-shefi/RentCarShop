@@ -14,7 +14,7 @@
             overflow: hidden;
         }
         .admin-table th {
-            background-color: #1e293b; /* כחול כהה כמו ב-Header */
+            background-color: #405367;
             color: #ffffff;
             text-align: right;
             padding: 16px;

@@ -138,7 +138,7 @@ public partial class ManageOrders : System.Web.UI.Page
 
                 html.Append("<a href='ManageOrders.aspx?action=reject_cancel&id=" + orderId + "' " +
                             "onclick=\"return confirm('לדחות את בקשת הביטול ולהשאיר את ההזמנה פעילה?');\" " +
-                            "style='display:inline-block; padding:6px 12px; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600;'>דחה בקשה</a>");
+                            "style='display:inline-block; padding:6px 12px; background:#f3f5f6; color:#52667a; border:1px solid #ced7df; border-radius:7px; text-decoration:none; font-size:13px; font-weight:600;'>דחה בקשה</a>");
             }
             // מקרה 2: הזמנה בסטטוס "ממתין"
             else if (status == "ממתין")
@@ -153,14 +153,14 @@ public partial class ManageOrders : System.Web.UI.Page
 
                 html.Append("<a href='ManageOrders.aspx?action=cancel&id=" + orderId + "' " +
                             "onclick=\"return confirm('לבטל את ההזמנה?');\" " +
-                            "style='display:inline-block; padding:6px 12px; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600;'>בטל</a>");
+                            "style='display:inline-block; padding:6px 12px; background:var(--color-destructive-soft); color:var(--color-destructive); border:1px solid var(--color-destructive-border); border-radius:7px; text-decoration:none; font-size:13px; font-weight:600;'>בטל</a>");
             }
             // מקרה 3: הזמנה בסטטוס "מאושר"
             else if (status == "מאושר")
             {
                 html.Append("<a href='ManageOrders.aspx?action=cancel&id=" + orderId + "' " +
                             "onclick=\"return confirm('לבטל את ההזמנה?');\" " +
-                            "style='display:inline-block; padding:6px 12px; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600;'>בטל</a>");
+                            "style='display:inline-block; padding:6px 12px; background:var(--color-destructive-soft); color:var(--color-destructive); border:1px solid var(--color-destructive-border); border-radius:7px; text-decoration:none; font-size:13px; font-weight:600;'>בטל</a>");
             }
 
             html.Append("</td>");

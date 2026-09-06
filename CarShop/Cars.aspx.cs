@@ -144,7 +144,7 @@ public partial class Cars : System.Web.UI.Page
                         html.Append("<div class='card-actions' style='margin-top:8px; display:flex; gap:6px;'>");
 
                         // כפתור ערוך
-                        html.Append("<a href='EditCar.aspx?id=" + carId + "' style='flex:1; text-align:center; padding:6px; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600;'>ערוך</a>");
+                        html.Append("<a href='EditCar.aspx?id=" + carId + "' style='flex:1; text-align:center; padding:6px; background:#f3f5f6; color:#52667a; border:1px solid #ced7df; border-radius:7px; text-decoration:none; font-size:13px; font-weight:600;'>ערוך</a>");
 
                         // כפתור מחק
                         html.Append("<a href='Cars.aspx?action=delete&id=" + carId + "' onclick=\"return confirm('למחוק את הרכב? הפעולה אינה הפיכה.');\" style='flex:1; text-align:center; padding:6px; background:var(--color-destructive-soft); color:var(--color-destructive); border:1px solid var(--color-destructive-border); border-radius:6px; text-decoration:none; font-size:13px; font-weight:600;'>מחק</a>");
