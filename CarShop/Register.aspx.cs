@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 
 public partial class Register : System.Web.UI.Page
 {
@@ -56,17 +57,14 @@ public partial class Register : System.Web.UI.Page
                 return;
             }
 
-            // SQL escape to prevent injection
-            username = username.Replace("'", "''");
-            firstName = firstName.Replace("'", "''");
-            lastName = lastName.Replace("'", "''");
-            email = email.Replace("'", "''");
-            phone = phone.Replace("'", "''");
-            password = password.Replace("'", "''");
-
-            // Check if user already exists
-            string checkSql = "SELECT COUNT(*) FROM Users WHERE Username = '" + username + "' OR Email = '" + email + "'";
-            DataTable checkDt = MyAdoHelper.ExecuteDataTable(checkSql);
+            // Check if user already exists using parameterized query
+            string checkSql = "SELECT COUNT(*) FROM Users WHERE Username = @Username OR Email = @Email";
+            SqlParameter[] checkParams = new SqlParameter[]
+            {
+                new SqlParameter("@Username", username),
+                new SqlParameter("@Email", email)
+            };
+            DataTable checkDt = MyAdoHelper.ExecuteDataTable(checkSql, checkParams);
 
             if (checkDt != null && checkDt.Rows.Count > 0 && checkDt.Rows[0][0] != null)
             {
@@ -78,11 +76,20 @@ public partial class Register : System.Web.UI.Page
                 }
             }
 
-            // Insert new user
-            string sql = "INSERT INTO Users (Username, Password, FirstName, LastName, Email, Phone, IsAdmin) VALUES ('" +
-                         username + "', '" + password + "', '" + firstName + "', '" + lastName + "', '" + email + "', '" + phone + "', 0)";
+            // Insert new user with parameterized query and password hashing
+            string hashedPassword = PasswordHelper.HashPassword(password);
+            string sql = "INSERT INTO Users (Username, Password, FirstName, LastName, Email, Phone, IsAdmin) VALUES (@Username, @Password, @FirstName, @LastName, @Email, @Phone, 0)";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Username", username),
+                new SqlParameter("@Password", hashedPassword),
+                new SqlParameter("@FirstName", firstName),
+                new SqlParameter("@LastName", lastName),
+                new SqlParameter("@Email", email),
+                new SqlParameter("@Phone", phone)
+            };
 
-            MyAdoHelper.DoQuery(sql);
+            MyAdoHelper.DoQuery(sql, parameters);
 
             // Success - redirect to login
             Response.Redirect("Login.aspx");
@@ -101,3 +108,4 @@ public partial class Register : System.Web.UI.Page
         }
     }
 }
+

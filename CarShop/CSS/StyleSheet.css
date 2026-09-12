@@ -116,15 +116,17 @@ form {
         text-decoration: none;
         font-size: 16px;
         font-weight: 600;
-        padding: 6px 4px;
+        padding: 8px 10px;
+        border-radius: 8px;
         position: relative;
         white-space: nowrap;
+        transition: background-color 0.2s ease, color 0.2s ease;
     }
 
         .navbar > a::after {
             content: "";
             position: absolute;
-            bottom: 2px;
+            bottom: 3px;
             left: 50%;
             width: 0;
             height: 2px;
@@ -133,8 +135,13 @@ form {
             transition: width 0.35s ease;
         }
 
+        .navbar > a:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
         .navbar > a:hover::after {
-            width: 100%;
+            width: calc(100% - 20px);
         }
 
 /* =========================
@@ -184,10 +191,10 @@ form {
     position: absolute;
     left: 0;
     top: calc(100% + 10px);
-    min-width: 180px;
-    background: #405367;
+    width: 180px;
+    background: linear-gradient(180deg, #43596e 0%, #3d5165 100%);
     border: 1px solid #718397;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 8px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
     display: none;
@@ -200,6 +207,9 @@ form {
 
     .nav-dropdown-menu a {
         display: block;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
         padding: 11px 14px;
         color: white;
         text-decoration: none !important;
@@ -260,9 +270,9 @@ form {
    ===================================================================== */
 
 .main-content {
-    max-width: 1400px;
+    max-width: 1240px;
     margin: 32px auto 44px;
-    padding: 0 30px;
+    padding: 0 24px;
     flex: 1;
     width: 100%;
 }
@@ -436,11 +446,11 @@ input[type="button"] {
 .hero {
     display: flex;
     align-items: center;
-    gap: 50px;
+    gap: 36px;
     flex-wrap: wrap;
     background-color: var(--color-white);
-    padding: 50px;
-    border-radius: 12px;
+    padding: 42px;
+    border-radius: 14px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--color-gray-dark);
 }
@@ -485,7 +495,7 @@ input[type="button"] {
     align-items: center;
     background-color: var(--color-white);
     padding: 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--color-gray-dark);
     margin-bottom: 30px;
@@ -518,8 +528,8 @@ input[type="button"] {
 
 .card {
     background-color: var(--color-white);
-    border-radius: 10px;
-    overflow: hidden; 
+    border-radius: 12px;
+    overflow: hidden;
     box-shadow: var(--shadow-sm);
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
     border: 1px solid var(--color-gray-dark);
@@ -577,18 +587,22 @@ input[type="button"] {
 .card-actions {
     display: flex;
     gap: 8px;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     margin-top: 10px;
 }
 
     .card-actions .btn {
         flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 38px;
         text-align: center;
-        padding: 10px 4px;
+        padding: 10px 8px;
         font-size: 13px;
         white-space: nowrap;
-        border-radius: 7px;
+        border-radius: 8px;
         text-decoration: none;
     }
 
@@ -653,7 +667,7 @@ table {
     border-collapse: separate;
     border-spacing: 0;
     background-color: var(--color-white);
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--color-gray-dark);
@@ -661,7 +675,7 @@ table {
 }
 
     table th {
-        background-color: #f5f7f8;
+        background-color: #edf2f6;
         color: var(--color-black);
         font-weight: 600;
         font-size: 14px;
@@ -814,6 +828,9 @@ table {
 .nav-dropdown-menu a {
     position: relative;
     display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
     padding: 12px 16px;
     font-size: 14px;
     font-weight: 500;

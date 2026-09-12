@@ -108,6 +108,7 @@
     <Content Include="Admin.aspx" />
     <Content Include="App_Data\CreateDatabase.sql" />
     <Content Include="App_Data\InsertSampleCars.sql" />
+    <Content Include="App_Data\MigratePasswords.sql" />
     <Content Include="BUG_FIX_SUMMARY.txt" />
     <Content Include="CarDetails.aspx" />
     <Content Include="CarMatch.aspx" />
@@ -117,6 +118,7 @@
     <Content Include="DESIGN_IMPROVEMENTS.txt" />
     <Content Include="EditCar.aspx" />
     <Content Include="FINAL_REPORT.txt" />
+    <Content Include="GenerateHashForSeed.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Home.aspx" />
     <Content Include="Images\car1.png" />
@@ -186,6 +188,7 @@
     <Compile Include="EditCar.aspx.designer.cs">
       <DependentUpon>EditCar.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CsrfTokenHelper.cs" />
     <Compile Include="Helpers\MyAdoHelper.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -197,6 +200,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -279,6 +283,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Site.master" />
+    <Content Include="SECURITY_FIX_SUMMARY.md" />
+    <Content Include="PASSWORD_FIX_DOCUMENTATION.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

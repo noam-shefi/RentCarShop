@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using System.Web;
 
@@ -74,7 +75,12 @@ public partial class ManageOrders : System.Web.UI.Page
                 return;
         }
 
-        MyAdoHelper.DoQuery("UPDATE Orders SET Status = N'" + newStatus + "' WHERE Id = " + orderId);
+        SqlParameter[] parameters = new SqlParameter[]
+        {
+            new SqlParameter("@Status", newStatus),
+            new SqlParameter("@OrderId", orderId)
+        };
+        MyAdoHelper.DoQuery("UPDATE Orders SET Status = @Status WHERE Id = @OrderId", parameters);
         Response.Redirect("ManageOrders.aspx?msg=updated");
     }
 

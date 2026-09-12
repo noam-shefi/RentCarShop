@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using System.Web;
 
@@ -80,19 +81,36 @@ public partial class Admin : System.Web.UI.Page
             return;
         }
 
+        // בדיקה נוספת: וודא שה-action is valid
+        if (action != "delete" && action != "promote" && action != "demote")
+        {
+            Response.Redirect("Admin.aspx?msg=error");
+            return;
+        }
+
+        // בדיקה נוספת: וודא שה-userId גדול מ-0
+        if (userId <= 0)
+        {
+            Response.Redirect("Admin.aspx?msg=error");
+            return;
+        }
+
         if (action == "delete")
         {
-            MyAdoHelper.DoQuery("DELETE FROM Users WHERE Id = " + userId);
+            SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Id", userId) };
+            MyAdoHelper.DoQuery("DELETE FROM Users WHERE Id = @Id", parameters);
             Response.Redirect("Admin.aspx?msg=deleted");
         }
         else if (action == "promote")
         {
-            MyAdoHelper.DoQuery("UPDATE Users SET IsAdmin = 1 WHERE Id = " + userId);
+            SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Id", userId) };
+            MyAdoHelper.DoQuery("UPDATE Users SET IsAdmin = 1 WHERE Id = @Id", parameters);
             Response.Redirect("Admin.aspx?msg=promoted");
         }
         else if (action == "demote")
         {
-            MyAdoHelper.DoQuery("UPDATE Users SET IsAdmin = 0 WHERE Id = " + userId);
+            SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Id", userId) };
+            MyAdoHelper.DoQuery("UPDATE Users SET IsAdmin = 0 WHERE Id = @Id", parameters);
             Response.Redirect("Admin.aspx?msg=demoted");
         }
         else
@@ -103,7 +121,8 @@ public partial class Admin : System.Web.UI.Page
 
     private string GetUsernameById(int id)
     {
-        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Username FROM Users WHERE Id = " + id);
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Id", id) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Username FROM Users WHERE Id = @Id", parameters);
         if (dt.Rows.Count > 0)
         {
             return dt.Rows[0]["Username"].ToString();

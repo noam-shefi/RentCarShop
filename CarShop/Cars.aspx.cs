@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 
 public partial class Cars : System.Web.UI.Page
@@ -18,7 +19,11 @@ public partial class Cars : System.Web.UI.Page
     private void HandleDelete()
     {
         int carId;
-        if (int.TryParse(Request.QueryString["id"], out carId)) MyAdoHelper.DoQuery("DELETE FROM Cars WHERE Id = " + carId);
+        if (int.TryParse(Request.QueryString["id"], out carId))
+        {
+            SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Id", carId) };
+            MyAdoHelper.DoQuery("DELETE FROM Cars WHERE Id = @Id", parameters);
+        }
         Response.Redirect("Cars.aspx");
     }
 

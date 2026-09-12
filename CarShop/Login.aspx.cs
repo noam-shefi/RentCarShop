@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 
 public partial class Login : System.Web.UI.Page
 {
@@ -12,39 +13,80 @@ public partial class Login : System.Web.UI.Page
         string username = txtUsername.Text.Trim();
         string password = txtPassword.Text.Trim();
 
-        string sql = "SELECT * FROM Users WHERE Username = '" + username + "' AND Password = '" + password + "'";
-        DataTable dt = MyAdoHelper.ExecuteDataTable(sql);
+        // Fetch user by username only
+        string sql = "SELECT * FROM Users WHERE Username = @Username";
+        SqlParameter[] parameters = new SqlParameter[]
+        {
+            new SqlParameter("@Username", username)
+        };
+        DataTable dt = MyAdoHelper.ExecuteDataTable(sql, parameters);
 
         if (dt.Rows.Count > 0)
         {
             DataRow row = dt.Rows[0];
+            string storedPassword = row["Password"].ToString();
+            int userId = Convert.ToInt32(row["Id"]);
 
-            // אתחול ה-Session עם שם המשתמש שהתחבר
-            Session["user"] = row["Username"].ToString();
+            bool passwordMatches = false;
 
-            // בדיקה האם המשתמש הוא מנהל, ואם כן - אתחול Session נוסף
-            bool isAdmin = Convert.ToBoolean(row["IsAdmin"]);
-            if (isAdmin)
+            // Try hashed password verification first (new format)
+            try
             {
-                Session["admin"] = "yes";
+                passwordMatches = PasswordHelper.VerifyPassword(password, storedPassword);
+            }
+            catch
+            {
+                // If hashing fails, fall back to plaintext comparison for backward compatibility
+                passwordMatches = false;
             }
 
-            // אם הגענו לדף ההתחברות מתוך דף אחר (למשל "התחבר כדי להשכיר"
-            // בדף פרטי רכב), נחזור בדיוק לאותו דף אחרי התחברות מוצלחת.
-            string returnUrl = Request.QueryString["returnUrl"];
-            if (IsSafeReturnUrl(returnUrl))
+            // Fallback to plaintext comparison for existing accounts during migration
+            if (!passwordMatches && storedPassword == password)
             {
-                Response.Redirect(returnUrl);
+                passwordMatches = true;
+
+                // Auto-upgrade to hashed password
+                try
+                {
+                    string hashedPassword = PasswordHelper.HashPassword(password);
+                    SqlParameter[] updateParams = new SqlParameter[] 
+                    { 
+                        new SqlParameter("@Password", hashedPassword),
+                        new SqlParameter("@UserId", userId)
+                    };
+                    MyAdoHelper.DoQuery("UPDATE Users SET Password = @Password WHERE Id = @UserId", updateParams);
+                }
+                catch { } // Silently continue even if auto-upgrade fails
             }
-            else
+
+            if (passwordMatches)
             {
-                Response.Redirect("Home.aspx");
+                // אתחול ה-Session עם שם המשתמש שהתחבר
+                Session["user"] = row["Username"].ToString();
+
+                // בדיקה האם המשתמש הוא מנהל, ואם כן - אתחול Session נוסף
+                bool isAdmin = Convert.ToBoolean(row["IsAdmin"]);
+                if (isAdmin)
+                {
+                    Session["admin"] = "yes";
+                }
+
+                // אם הגענו לדף ההתחברות מתוך דף אחר (למשל "התחבר כדי להשכיר"
+                // בדף פרטי רכב), נחזור בדיוק לאותו דף אחרי התחברות מוצלחת.
+                string returnUrl = Request.QueryString["returnUrl"];
+                if (IsSafeReturnUrl(returnUrl))
+                {
+                    Response.Redirect(returnUrl);
+                }
+                else
+                {
+                    Response.Redirect("Home.aspx");
+                }
+                return;
             }
         }
-        else
-        {
-            lblError.Text = "שם המשתמש או הסיסמה שגויים";
-        }
+
+        lblError.Text = "שם המשתמש או הסיסמה שגויים";
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Web;
 
 public partial class AddReview : System.Web.UI.Page
@@ -41,9 +42,14 @@ public partial class AddReview : System.Web.UI.Page
         string sql =
             "SELECT o.Id, o.CarId, o.Status, o.EndDate, c.Manufacturer, c.Model " +
             "FROM Orders o JOIN Cars c ON o.CarId = c.Id " +
-            "WHERE o.Id = " + _orderId + " AND o.UserId = " + _userId;
+            "WHERE o.Id = @OrderId AND o.UserId = @UserId";
 
-        DataTable dt = MyAdoHelper.ExecuteDataTable(sql);
+        SqlParameter[] parameters = new SqlParameter[]
+        {
+            new SqlParameter("@OrderId", _orderId),
+            new SqlParameter("@UserId", _userId)
+        };
+        DataTable dt = MyAdoHelper.ExecuteDataTable(sql, parameters);
 
         if (dt.Rows.Count == 0)
         {
@@ -63,7 +69,8 @@ public partial class AddReview : System.Web.UI.Page
             return;
         }
 
-        bool alreadyReviewed = MyAdoHelper.IsExist("SELECT Id FROM Reviews WHERE OrderId = " + _orderId);
+        SqlParameter[] checkReviewParams = new SqlParameter[] { new SqlParameter("@OrderId", _orderId) };
+        bool alreadyReviewed = MyAdoHelper.IsExist("SELECT Id FROM Reviews WHERE OrderId = @OrderId", checkReviewParams);
         if (alreadyReviewed)
         {
             lblMessage.Text = "כבר השארת ביקורת עבור הזמנה זו.";
@@ -90,7 +97,8 @@ public partial class AddReview : System.Web.UI.Page
         int carId = Convert.ToInt32(ViewState["CarId"]);
 
         // בדיקה חוזרת שאין עדיין ביקורת (מניעת שליחה כפולה בריענון)
-        bool alreadyReviewed = MyAdoHelper.IsExist("SELECT Id FROM Reviews WHERE OrderId = " + _orderId);
+        SqlParameter[] checkParams = new SqlParameter[] { new SqlParameter("@OrderId", _orderId) };
+        bool alreadyReviewed = MyAdoHelper.IsExist("SELECT Id FROM Reviews WHERE OrderId = @OrderId", checkParams);
         if (alreadyReviewed)
         {
             lblMessage.Text = "כבר השארת ביקורת עבור הזמנה זו.";
@@ -101,10 +109,17 @@ public partial class AddReview : System.Web.UI.Page
         int rating = int.Parse(ddlRating.SelectedValue);
         string comment = txtComment.Text.Trim();
 
-        string sql = "INSERT INTO Reviews (UserId, CarId, OrderId, Rating, Comment, ReviewDate) VALUES (" +
-                     _userId + ", " + carId + ", " + _orderId + ", " + rating + ", N'" + comment.Replace("'", "''") + "', GETDATE())";
+        SqlParameter[] reviewParams = new SqlParameter[]
+        {
+            new SqlParameter("@UserId", _userId),
+            new SqlParameter("@CarId", carId),
+            new SqlParameter("@OrderId", _orderId),
+            new SqlParameter("@Rating", rating),
+            new SqlParameter("@Comment", comment)
+        };
 
-        MyAdoHelper.DoQuery(sql);
+        string sql = "INSERT INTO Reviews (UserId, CarId, OrderId, Rating, Comment, ReviewDate) VALUES (@UserId, @CarId, @OrderId, @Rating, @Comment, GETDATE())";
+        MyAdoHelper.DoQuery(sql, reviewParams);
 
         // PRG - הפניה אחרי POST למניעת שליחה כפולה בריענון
         Response.Redirect("MyOrders.aspx?reviewMsg=ok");
@@ -112,7 +127,8 @@ public partial class AddReview : System.Web.UI.Page
 
     private int GetUserIdByUsername(string username)
     {
-        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = '" + username.Replace("'", "''") + "'");
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Username", username) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = @Username", parameters);
         if (dt.Rows.Count > 0)
         {
             return Convert.ToInt32(dt.Rows[0]["Id"]);

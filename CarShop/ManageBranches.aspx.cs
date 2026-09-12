@@ -34,8 +34,11 @@ public partial class ManageBranches : System.Web.UI.Page
             int branchId;
             if (int.TryParse(Request.QueryString["id"], out branchId))
             {
-                MyAdoHelper.DoQuery("UPDATE Cars SET BranchId = NULL WHERE BranchId = " + branchId);
-                MyAdoHelper.DoQuery("DELETE FROM Branches WHERE Id = " + branchId);
+                SqlParameter[] updateParams = new SqlParameter[] { new SqlParameter("@BranchId", branchId) };
+                MyAdoHelper.DoQuery("UPDATE Cars SET BranchId = NULL WHERE BranchId = @BranchId", updateParams);
+
+                SqlParameter[] deleteParams = new SqlParameter[] { new SqlParameter("@BranchId", branchId) };
+                MyAdoHelper.DoQuery("DELETE FROM Branches WHERE Id = @BranchId", deleteParams);
 
                 // שמירת הודעת הצלחה כדי להציג אותה אחרי הרענון
                 Session["BranchMsg"] = "הסניף נמחק בהצלחה!";

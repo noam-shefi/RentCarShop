@@ -8,6 +8,12 @@ GO
 INSERT INTO Users
 (Username, Password, FirstName, LastName, Email, IsAdmin)
 VALUES
+-- NOTE: Passwords are now hashed with PBKDF2. During the migration, plaintext passwords
+-- will be automatically upgraded to hashes on first login attempt.
+-- For now, you can either:
+-- Option A: Keep plaintext initially and let auto-upgrade handle it on first login
+-- Option B: Run GenerateHashForSeed.aspx to get hashed values for initial insert
+-- This uses plaintext for backward compatibility during schema migration:
 (N'admin', N'123456', N'מנהל', N'מערכת', N'admin@carshop.com', 1),
 (N'noam', N'123456', N'noam', N'noam', N'noam@gmail.com', 0);
 

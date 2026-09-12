@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Net.Mail;
 using System.Text;
@@ -33,9 +34,31 @@ public partial class CarDetails : System.Web.UI.Page
         int userId = GetUserIdByUsername(Session["user"].ToString());
         if (userId == 0) return;
 
-        DataTable existing = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Favorites WHERE UserId = " + userId + " AND CarId = " + _carId);
-        if (existing.Rows.Count > 0) MyAdoHelper.DoQuery("DELETE FROM Favorites WHERE UserId = " + userId + " AND CarId = " + _carId);
-        else MyAdoHelper.DoQuery("INSERT INTO Favorites (UserId, CarId, AddedDate) VALUES (" + userId + ", " + _carId + ", GETDATE())");
+        SqlParameter[] selectParams = new SqlParameter[] 
+        { 
+            new SqlParameter("@UserId", userId),
+            new SqlParameter("@CarId", _carId)
+        };
+        DataTable existing = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Favorites WHERE UserId = @UserId AND CarId = @CarId", selectParams);
+
+        if (existing.Rows.Count > 0)
+        {
+            SqlParameter[] deleteParams = new SqlParameter[] 
+            { 
+                new SqlParameter("@UserId", userId),
+                new SqlParameter("@CarId", _carId)
+            };
+            MyAdoHelper.DoQuery("DELETE FROM Favorites WHERE UserId = @UserId AND CarId = @CarId", deleteParams);
+        }
+        else
+        {
+            SqlParameter[] insertParams = new SqlParameter[] 
+            { 
+                new SqlParameter("@UserId", userId),
+                new SqlParameter("@CarId", _carId)
+            };
+            MyAdoHelper.DoQuery("INSERT INTO Favorites (UserId, CarId, AddedDate) VALUES (@UserId, @CarId, GETDATE())", insertParams);
+        }
 
         Response.Redirect("CarDetails.aspx?id=" + _carId);
     }
@@ -50,9 +73,10 @@ public partial class CarDetails : System.Web.UI.Page
             "(SELECT COUNT(*) FROM Orders o WHERE o.CarId = Cars.Id AND o.Status NOT IN (N'בוטל', N'נדחה') AND o.StartDate <= CAST(GETDATE() AS DATE) AND o.EndDate >= CAST(GETDATE() AS DATE)) AS ActiveRentals, " +
             "(SELECT AVG(CAST(Rating AS FLOAT)) FROM Reviews r WHERE r.CarId = Cars.Id) AS AvgRating, " +
             "(SELECT COUNT(*) FROM Reviews r WHERE r.CarId = Cars.Id) AS ReviewCount " +
-            "FROM Cars LEFT JOIN Branches ON Cars.BranchId = Branches.Id WHERE Cars.Id = " + _carId;
+            "FROM Cars LEFT JOIN Branches ON Cars.BranchId = Branches.Id WHERE Cars.Id = @CarId";
 
-        DataTable dt = MyAdoHelper.ExecuteDataTable(sql);
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@CarId", _carId) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable(sql, parameters);
         if (dt.Rows.Count == 0)
         {
             ltrCarDetails.Text = "<p class='text-error text-center'>הרכב המבוקש לא נמצא.</p><div class='text-center'><a href='Cars.aspx' class='btn'>חזרה לקטלוג</a></div>";
@@ -86,8 +110,9 @@ public partial class CarDetails : System.Web.UI.Page
         string ratingText = reviewCount == 0 ? "אין עדיין ביקורות" : "⭐ " + Convert.ToDouble(row["AvgRating"]).ToString("0.0") + " מתוך 5 (" + reviewCount + " ביקורות)";
 
         // חישוב מערך תאריכים חסומים ליומן (Flatpickr)
-        string orderSql = "SELECT StartDate, EndDate FROM Orders WHERE CarId = " + _carId + " AND Status NOT IN (N'בוטל', N'נדחה') AND EndDate >= GETDATE()";
-        DataTable dtOrders = MyAdoHelper.ExecuteDataTable(orderSql);
+        string orderSql = "SELECT StartDate, EndDate FROM Orders WHERE CarId = @CarId AND Status NOT IN (N'בוטל', N'נדחה') AND EndDate >= GETDATE()";
+        SqlParameter[] orderParams = new SqlParameter[] { new SqlParameter("@CarId", _carId) };
+        DataTable dtOrders = MyAdoHelper.ExecuteDataTable(orderSql, orderParams);
 
         System.Collections.Generic.Dictionary<DateTime, int> dateCounts = new System.Collections.Generic.Dictionary<DateTime, int>();
         foreach (DataRow r in dtOrders.Rows)
@@ -167,7 +192,12 @@ public partial class CarDetails : System.Web.UI.Page
         if (Session["user"] != null && ltrFavBtn != null)
         {
             int userId = GetUserIdByUsername(Session["user"].ToString());
-            bool isFavorite = userId != 0 && MyAdoHelper.ExecuteDataTable("SELECT Id FROM Favorites WHERE UserId = " + userId + " AND CarId = " + _carId).Rows.Count > 0;
+            SqlParameter[] favParams = new SqlParameter[] 
+            { 
+                new SqlParameter("@UserId", userId),
+                new SqlParameter("@CarId", _carId)
+            };
+            bool isFavorite = userId != 0 && MyAdoHelper.ExecuteDataTable("SELECT Id FROM Favorites WHERE UserId = @UserId AND CarId = @CarId", favParams).Rows.Count > 0;
             string favLabel = isFavorite ? "💔 הסר מהמועדפים" : "🤍 הוסף למועדפים";
             ltrFavBtn.Text = "<a href='CarDetails.aspx?id=" + _carId + "&action=togglefav' class='btn' style='background:#718397; color:#fff;'>" + favLabel + "</a>";
             ltrFavBtn.Visible = true;
@@ -180,7 +210,8 @@ public partial class CarDetails : System.Web.UI.Page
 
     private string BuildReviewsHtml()
     {
-        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT r.Rating, r.Comment, r.ReviewDate, u.Username FROM Reviews r JOIN Users u ON r.UserId = u.Id WHERE r.CarId = " + _carId + " ORDER BY r.ReviewDate DESC");
+        SqlParameter[] reviewParams = new SqlParameter[] { new SqlParameter("@CarId", _carId) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT r.Rating, r.Comment, r.ReviewDate, u.Username FROM Reviews r JOIN Users u ON r.UserId = u.Id WHERE r.CarId = @CarId ORDER BY r.ReviewDate DESC", reviewParams);
         if (dt.Rows.Count == 0) return "";
         StringBuilder html = new StringBuilder();
         html.Append("<div class='section' style='margin-top:30px;'><h3>ביקורות לקוחות</h3>");
@@ -200,9 +231,17 @@ public partial class CarDetails : System.Web.UI.Page
 
     protected void btnRent_Click(object sender, EventArgs e)
     {
+        // Authorization check
         if (Session["user"] == null)
         {
             Response.Redirect("Login.aspx?returnUrl=" + HttpUtility.UrlEncode("CarDetails.aspx?id=" + _carId));
+            return;
+        }
+
+        // Validate carId
+        if (_carId <= 0)
+        {
+            ShowRentError("פרטי הרכב אינם תקינים.");
             return;
         }
 
@@ -219,7 +258,7 @@ public partial class CarDetails : System.Web.UI.Page
             return;
         }
 
-        DataTable carDt = MyAdoHelper.ExecuteDataTable("SELECT Manufacturer, Model, Price, Stock FROM Cars WHERE Id = " + _carId);
+        DataTable carDt = MyAdoHelper.ExecuteDataTable("SELECT Manufacturer, Model, Price, Stock FROM Cars WHERE Id = @CarId", new SqlParameter[] { new SqlParameter("@CarId", _carId) });
         if (carDt.Rows.Count == 0)
         {
             Response.Redirect("Cars.aspx");
@@ -231,12 +270,18 @@ public partial class CarDetails : System.Web.UI.Page
         string carName = carDt.Rows[0]["Manufacturer"].ToString() + " " + carDt.Rows[0]["Model"].ToString();
 
         string overlapSql =
-            "SELECT StartDate, EndDate FROM Orders WHERE CarId = " + _carId +
+            "SELECT StartDate, EndDate FROM Orders WHERE CarId = @CarId" +
             " AND Status NOT IN (N'בוטל', N'נדחה')" +
-            " AND StartDate <= '" + endDate.ToString("yyyy-MM-dd") + "'" +
-            " AND EndDate >= '" + startDate.ToString("yyyy-MM-dd") + "'";
+            " AND StartDate <= @EndDate" +
+            " AND EndDate >= @StartDate";
 
-        DataTable dtOrders = MyAdoHelper.ExecuteDataTable(overlapSql);
+        SqlParameter[] overlapParams = new SqlParameter[]
+        {
+            new SqlParameter("@CarId", _carId),
+            new SqlParameter("@StartDate", startDate.ToString("yyyy-MM-dd")),
+            new SqlParameter("@EndDate", endDate.ToString("yyyy-MM-dd"))
+        };
+        DataTable dtOrders = MyAdoHelper.ExecuteDataTable(overlapSql, overlapParams);
 
         bool isAvailable = true;
         for (DateTime d = startDate.Date; d < endDate.Date; d = d.AddDays(1))
@@ -349,5 +394,10 @@ public partial class CarDetails : System.Web.UI.Page
     }
 
     private void ShowRentError(string msg) { lblRentMessage.CssClass = "error-message"; lblRentMessage.Text = msg; }
-    private int GetUserIdByUsername(string u) { DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = '" + u.Replace("'", "''") + "'"); return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0]["Id"]) : 0; }
+    private int GetUserIdByUsername(string u) 
+    { 
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Username", u) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = @Username", parameters);
+        return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0]["Id"]) : 0;
+    }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 
 public partial class UpdateProfile : System.Web.UI.Page
 {
@@ -24,8 +25,8 @@ public partial class UpdateProfile : System.Web.UI.Page
     private void LoadUserData()
     {
         string username = Session["user"].ToString();
-        string sql = "SELECT * FROM Users WHERE Username = '" + username + "'";
-        DataTable dt = MyAdoHelper.ExecuteDataTable(sql);
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Username", username) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT * FROM Users WHERE Username = @Username", parameters);
 
         if (dt.Rows.Count > 0)
         {
@@ -41,13 +42,17 @@ public partial class UpdateProfile : System.Web.UI.Page
     {
         string username = Session["user"].ToString();
 
-        string sql = "UPDATE Users SET FirstName = '" + txtFirstName.Text.Trim() +
-                     "', LastName = '" + txtLastName.Text.Trim() +
-                     "', Email = '" + txtEmail.Text.Trim() +
-                     "', Phone = '" + txtPhone.Text.Trim() +
-                     "' WHERE Username = '" + username + "'";
+        SqlParameter[] parameters = new SqlParameter[]
+        {
+            new SqlParameter("@FirstName", txtFirstName.Text.Trim()),
+            new SqlParameter("@LastName", txtLastName.Text.Trim()),
+            new SqlParameter("@Email", txtEmail.Text.Trim()),
+            new SqlParameter("@Phone", txtPhone.Text.Trim()),
+            new SqlParameter("@Username", username)
+        };
 
-        MyAdoHelper.DoQuery(sql);
+        string sql = "UPDATE Users SET FirstName = @FirstName, LastName = @LastName, Email = @Email, Phone = @Phone WHERE Username = @Username";
+        MyAdoHelper.DoQuery(sql, parameters);
 
         lblMessage.Text = "הפרטים עודכנו בהצלחה";
     }
