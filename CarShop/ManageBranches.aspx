@@ -7,7 +7,7 @@
             <h2 style="margin: 0;">סניפים קיימים</h2>
             
             <!-- כפתור פתיחת חלונית ההוספה -->
-            <asp:Button ID="btnOpenModal" runat="server" Text="+ סניף חדש" CssClass="btn btn-main" OnClick="btnOpenModal_Click" style="background:#2563eb; color:white; padding: 10px 20px;" />
+            <asp:Button ID="btnOpenModal" runat="server" Text="+ סניף חדש" CssClass="btn btn-main" OnClick="btnOpenModal_Click" style="background:#52667a; color:white; padding: 10px 20px;" />
         </div>
 
         <!-- הודעת הצלחה ראשית שתוצג מעל הטבלה -->
@@ -37,8 +37,8 @@
             <asp:Label ID="lblModalMessage" runat="server" ForeColor="Red" style="display:block; margin-bottom:15px; font-size:14px;"></asp:Label>
 
             <div style="display:flex; gap:10px; justify-content:space-between;">
-                <asp:Button ID="btnAdd" runat="server" Text="שמור סניף" CssClass="btn" style="flex:1; background:#16a34a; color:white;" OnClick="btnAdd_Click" />
-                <asp:Button ID="btnCloseModal" runat="server" Text="ביטול" CssClass="btn" style="flex:1; background:#64748b; color:white;" OnClick="btnCloseModal_Click" />
+                <asp:Button ID="btnAdd" runat="server" Text="שמור סניף" CssClass="btn" style="flex:1; background:#52667a; color:white;" OnClick="btnAdd_Click" />
+                <asp:Button ID="btnCloseModal" runat="server" Text="ביטול" CssClass="btn" style="flex:1; background:#718397; color:white;" OnClick="btnCloseModal_Click" />
             </div>
         </div>
     </div>

@@ -21,7 +21,7 @@ GO
 CREATE TABLE Users (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Username NVARCHAR(50) NOT NULL,
-    Password NVARCHAR(50) NOT NULL,
+    Password NVARCHAR(MAX) NOT NULL,
     FirstName NVARCHAR(50),
     LastName NVARCHAR(50),
     Email NVARCHAR(100),

@@ -7,7 +7,7 @@ using System.Web;
 /// <summary>
 /// מחלקת עזר סטטית לתקשורת מאובטחת עם מסד הנתונים באמצעות ADO.NET.
 /// </summary>
-public static class MyAdoHelper
+public static class MyAdoHelper 
 {
     // התיקון הקריטי: מחרוזת התקשרות ישירה שדורסת כל הגדרה ישנה ומצביעה ב-100% לשרת המקומי החדש!
     private static readonly string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=CarShopDB;Integrated Security=True";

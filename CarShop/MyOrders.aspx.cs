@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using System.Web;
 
@@ -40,8 +41,16 @@ public partial class MyOrders : System.Web.UI.Page
         int userId = GetUserIdByUsername(Session["user"].ToString());
         if (userId == 0) return;
 
+        int orderIdInt;
+        if (!int.TryParse(orderId, out orderIdInt)) return;
+
         // בדיקה שאכן ההזמנה שייכת למשתמש הזה ושהסטטוס שלה הוא ממתין
-        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT OrderDate, Status FROM Orders WHERE Id = " + orderId + " AND UserId = " + userId);
+        SqlParameter[] selectParams = new SqlParameter[]
+        {
+            new SqlParameter("@OrderId", orderIdInt),
+            new SqlParameter("@UserId", userId)
+        };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT OrderDate, Status FROM Orders WHERE Id = @OrderId AND UserId = @UserId", selectParams);
 
         if (dt.Rows.Count > 0)
         {
@@ -54,12 +63,14 @@ public partial class MyOrders : System.Web.UI.Page
                 if (action == "cancel" && timePassed.TotalMinutes <= 10)
                 {
                     // ביטול אוטומטי ומיידי (פחות מ-10 דקות)
-                    MyAdoHelper.DoQuery("UPDATE Orders SET Status = N'בוטל' WHERE Id = " + orderId);
+                    SqlParameter[] updateParams = new SqlParameter[] { new SqlParameter("@OrderId", orderIdInt) };
+                    MyAdoHelper.DoQuery("UPDATE Orders SET Status = N'בוטל' WHERE Id = @OrderId", updateParams);
                 }
                 else if (action == "requestCancel" && timePassed.TotalMinutes > 10)
                 {
                     // בקשת ביטול מהמנהל (עברו יותר מ-10 דקות)
-                    MyAdoHelper.DoQuery("UPDATE Orders SET Status = N'בקשת ביטול' WHERE Id = " + orderId);
+                    SqlParameter[] updateParams = new SqlParameter[] { new SqlParameter("@OrderId", orderIdInt) };
+                    MyAdoHelper.DoQuery("UPDATE Orders SET Status = N'בקשת ביטול' WHERE Id = @OrderId", updateParams);
                 }
             }
         }
@@ -77,10 +88,11 @@ public partial class MyOrders : System.Web.UI.Page
         string sql = "SELECT o.Id, c.Manufacturer, c.Model, o.StartDate, o.EndDate, o.TotalPrice, o.Status, o.OrderDate, " +
                      "(SELECT COUNT(*) FROM Reviews r WHERE r.OrderId = o.Id) AS HasReview " +
                      "FROM Orders o JOIN Cars c ON o.CarId = c.Id " +
-                     "WHERE o.UserId = " + userId + " " +
+                     "WHERE o.UserId = @UserId " +
                      "ORDER BY o.Id DESC";
 
-        DataTable dt = MyAdoHelper.ExecuteDataTable(sql);
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@UserId", userId) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable(sql, parameters);
 
         if (dt.Rows.Count == 0)
         {
@@ -167,7 +179,8 @@ public partial class MyOrders : System.Web.UI.Page
 
     private int GetUserIdByUsername(string username)
     {
-        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = '" + username.Replace("'", "''") + "'");
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Username", username) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = @Username", parameters);
         if (dt.Rows.Count > 0)
         {
             return Convert.ToInt32(dt.Rows[0]["Id"]);

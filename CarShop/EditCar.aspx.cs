@@ -36,7 +36,8 @@ public partial class EditCar : System.Web.UI.Page
 
     private void LoadCar()
     {
-        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT * FROM Cars WHERE Id = " + _carId);
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@CarId", _carId) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT * FROM Cars WHERE Id = @CarId", parameters);
         if (dt.Rows.Count == 0) return;
         DataRow row = dt.Rows[0];
         txtManufacturer.Text = row["Manufacturer"].ToString();

@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using System.Web;
 
@@ -32,7 +33,12 @@ public partial class MyFavorites : System.Web.UI.Page
         if (int.TryParse(Request.QueryString["carId"], out carId))
         {
             int userId = GetUserIdByUsername(Session["user"].ToString());
-            MyAdoHelper.DoQuery("DELETE FROM Favorites WHERE UserId = " + userId + " AND CarId = " + carId);
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@UserId", userId),
+                new SqlParameter("@CarId", carId)
+            };
+            MyAdoHelper.DoQuery("DELETE FROM Favorites WHERE UserId = @UserId AND CarId = @CarId", parameters);
         }
         Response.Redirect("MyFavorites.aspx");
     }
@@ -43,10 +49,11 @@ public partial class MyFavorites : System.Web.UI.Page
 
         string sql = "SELECT c.* FROM Favorites f " +
                      "JOIN Cars c ON f.CarId = c.Id " +
-                     "WHERE f.UserId = " + userId + " " +
+                     "WHERE f.UserId = @UserId " +
                      "ORDER BY f.AddedDate DESC";
 
-        DataTable dt = MyAdoHelper.ExecuteDataTable(sql);
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@UserId", userId) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable(sql, parameters);
         ltrFavorites.Text = BuildFavoritesHtml(dt);
     }
 
@@ -93,8 +100,8 @@ public partial class MyFavorites : System.Web.UI.Page
 
     private int GetUserIdByUsername(string username)
     {
-        string safeUsername = username.Replace("'", "''");
-        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = '" + safeUsername + "'");
+        SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@Username", username) };
+        DataTable dt = MyAdoHelper.ExecuteDataTable("SELECT Id FROM Users WHERE Username = @Username", parameters);
         if (dt.Rows.Count > 0)
         {
             return Convert.ToInt32(dt.Rows[0]["Id"]);

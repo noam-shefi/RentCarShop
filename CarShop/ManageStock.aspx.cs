@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using System.Web;
 
@@ -58,7 +59,12 @@ public partial class ManageStock : System.Web.UI.Page
             return;
         }
 
-        MyAdoHelper.DoQuery("UPDATE Cars SET Stock = " + stock + " WHERE Id = " + carId);
+        SqlParameter[] parameters = new SqlParameter[]
+        {
+            new SqlParameter("@Stock", stock),
+            new SqlParameter("@CarId", carId)
+        };
+        MyAdoHelper.DoQuery("UPDATE Cars SET Stock = @Stock WHERE Id = @CarId", parameters);
         Response.Redirect("ManageStock.aspx?msg=updated");
     }
 

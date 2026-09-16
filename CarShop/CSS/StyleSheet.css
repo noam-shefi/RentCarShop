@@ -1,33 +1,33 @@
 ﻿/* =====================================================================
    StyleSheet.css - חנות הרכב שלי (עיצוב מודרני, נקי ומינימליסטי)
-   ערכת צבעים: לבן, אפור-רך, כחול-עמוק (Slate) ושחור-מט
+   ערכת צבעים: לבן, אפור-רך, כחול-אפור ומאוב
    ===================================================================== */
 
 :root {
-    /* פלטת צבעים חדשה - מודרנית ונקייה */
-    --color-black: #0f172a;
+    /* פלטת צבעים מאופקת ונעימה */
+    --color-black: #253240;
     --color-white: #ffffff;
-    --color-gold: #334155;
-    --color-gold-light: #475569;
+    --color-gold: #4f6377;
+    --color-gold-light: #6d8196;
     --color-gold-text: #8b6b6b;
     --color-gold-text-dark: #735757;
-    --color-gray: #f8fafc;
-    --color-gray-dark: #e2e8f0;
-    --color-text: #1e293b;
-    --color-text-light: #64748b;
-    /* צלליות רכות ומודרניות */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    /* Premium Professional Charcoal Theme - Darker & Refined */
-    --color-primary: #334155;
-    --color-primary-hover: #1e293b;
-    --color-secondary: #c9b8b8;
-    --color-secondary-hover: #b49e9e;
+    --color-gray: #f4f6f8;
+    --color-gray-dark: #d9e0e7;
+    --color-text: #2f3f4f;
+    --color-text-light: #667789;
+    /* צלליות רכות */
+    --shadow-sm: 0 2px 6px rgba(37, 50, 64, 0.06);
+    --shadow-md: 0 8px 22px rgba(37, 50, 64, 0.1);
+    --shadow-lg: 0 14px 30px rgba(37, 50, 64, 0.12);
+    --color-primary: #4f6377;
+    --color-primary-hover: #415466;
+    --color-secondary: #d6c9c9;
+    --color-secondary-hover: #c7b8b8;
     --color-destructive: #8b6b6b;
     --color-destructive-hover: #735757;
     --color-destructive-soft: #f3eaea;
     --color-destructive-border: #d8c2c2;
+    --color-focus: rgba(139, 107, 107, 0.22);
 }
 
 * {
@@ -47,7 +47,7 @@ body {
     line-height: 1.6;
     display: flex;
     flex-direction: column;
-    background-color: var(--color-gray);
+    background: linear-gradient(180deg, #f6f8fa 0%, var(--color-gray) 100%);
 }
 
 form {
@@ -62,7 +62,8 @@ form {
    ===================================================================== */
 
 .site-header {
-    background: #243353;
+    background: linear-gradient(180deg, #43596e 0%, #3d5165 100%);
+    box-shadow: 0 4px 14px rgba(37, 50, 64, 0.12);
     width: 100%;
     position: relative;
     z-index: 1000;
@@ -74,7 +75,7 @@ form {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px 24px;
-    padding: 18px 25px;
+    padding: 16px 25px;
     padding-left: 70px;
     box-sizing: border-box;
 }
@@ -92,8 +93,8 @@ form {
     .logo a {
         color: white;
         text-decoration: none;
-        font-size: 26px;
-        font-weight: bold;
+        font-size: 24px;
+        font-weight: 700;
     }
 
 /* =========================
@@ -115,25 +116,32 @@ form {
         text-decoration: none;
         font-size: 16px;
         font-weight: 600;
-        padding: 6px 4px;
+        padding: 8px 10px;
+        border-radius: 8px;
         position: relative;
         white-space: nowrap;
+        transition: background-color 0.2s ease, color 0.2s ease;
     }
 
         .navbar > a::after {
             content: "";
             position: absolute;
-            bottom: 2px;
+            bottom: 3px;
             left: 50%;
             width: 0;
             height: 2px;
-            background: #cbd5e1;
+            background: #d8caca;
             transform: translateX(-50%);
             transition: width 0.35s ease;
         }
 
+        .navbar > a:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
         .navbar > a:hover::after {
-            width: 100%;
+            width: calc(100% - 20px);
         }
 
 /* =========================
@@ -183,9 +191,9 @@ form {
     position: absolute;
     left: 0;
     top: calc(100% + 10px);
-    min-width: 180px;
-    background: #243353;
-    border: 1px solid #475569;
+    width: 180px;
+    background: linear-gradient(180deg, #43596e 0%, #3d5165 100%);
+    border: 1px solid #718397;
     border-radius: 10px;
     padding: 8px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
@@ -199,6 +207,9 @@ form {
 
     .nav-dropdown-menu a {
         display: block;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
         padding: 11px 14px;
         color: white;
         text-decoration: none !important;
@@ -208,12 +219,12 @@ form {
     }
 
         .nav-dropdown-menu a:hover {
-            background: #475569;
+            background: #52667a;
             color: white;
         }
 
     .nav-dropdown-menu .nav-logout {
-        color: #f8a5a5;
+        color: #eadada;
     }
 
         .nav-dropdown-menu .nav-logout:hover {
@@ -259,9 +270,9 @@ form {
    ===================================================================== */
 
 .main-content {
-    max-width: 1400px;
-    margin: 40px auto;
-    padding: 0 30px;
+    max-width: 1240px;
+    margin: 32px auto 44px;
+    padding: 0 24px;
     flex: 1;
     width: 100%;
 }
@@ -283,7 +294,7 @@ form {
 
 
 /* =====================================================================
-   BUTTONS (Updated to sleek pill shape)
+   BUTTONS
    ===================================================================== */
 
 button,
@@ -292,14 +303,16 @@ input[type="submit"],
 input[type="button"] {
     background-color: var(--color-primary);
     color: var(--color-white);
-    border: none;
-    padding: 12px 24px;
-    border-radius: 999px;
+    border: 1px solid rgba(37, 50, 64, 0.18);
+    padding: 11px 20px;
+    border-radius: 9px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: 0.15px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
     text-align: center;
+    box-shadow: var(--shadow-sm);
 }
 
     button:hover,
@@ -307,10 +320,27 @@ input[type="button"] {
     input[type="submit"]:hover,
     input[type="button"]:hover {
         background-color: var(--color-primary-hover);
+        border-color: rgba(37, 50, 64, 0.28);
         transform: translateY(-1px);
         box-shadow: var(--shadow-md);
         color: var(--color-white);
         text-decoration: none;
+    }
+
+    button:active,
+    .btn:active,
+    input[type="submit"]:active,
+    input[type="button"]:active {
+        transform: translateY(0);
+        box-shadow: var(--shadow-sm);
+    }
+
+    button:focus-visible,
+    .btn:focus-visible,
+    input[type="submit"]:focus-visible,
+    input[type="button"]:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px var(--color-focus), var(--shadow-md);
     }
 
 
@@ -354,10 +384,10 @@ input[type="button"] {
         width: 100%;
         padding: 12px;
         border: 1px solid #cbd5e1;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 14px;
         font-family: inherit;
-        transition: all 0.2s ease;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
         background-color: #ffffff;
     }
 
@@ -369,7 +399,7 @@ input[type="button"] {
         .form-container select:focus {
             outline: none;
             border-color: var(--color-gold-text);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 0 3px var(--color-focus);
         }
 
 
@@ -416,11 +446,11 @@ input[type="button"] {
 .hero {
     display: flex;
     align-items: center;
-    gap: 50px;
+    gap: 36px;
     flex-wrap: wrap;
     background-color: var(--color-white);
-    padding: 50px;
-    border-radius: 16px;
+    padding: 42px;
+    border-radius: 14px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--color-gray-dark);
 }
@@ -440,9 +470,9 @@ input[type="button"] {
     .hero-text h1 {
         color: var(--color-black);
         margin-bottom: 16px;
-        font-size: 42px;
-        font-weight: 800;
-        letter-spacing: -1px;
+        font-size: 40px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
         line-height: 1.1;
     }
 
@@ -465,7 +495,7 @@ input[type="button"] {
     align-items: center;
     background-color: var(--color-white);
     padding: 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--color-gray-dark);
     margin-bottom: 30px;
@@ -499,9 +529,9 @@ input[type="button"] {
 .card {
     background-color: var(--color-white);
     border-radius: 12px;
-    overflow: hidden; 
+    overflow: hidden;
     box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
     border: 1px solid var(--color-gray-dark);
     display: flex;
     flex-direction: column;
@@ -509,6 +539,7 @@ input[type="button"] {
 
     .card:hover {
         box-shadow: var(--shadow-md);
+        border-color: #ced7df;
     }
 
     /* הגדרת מעבר חלק לתמונה */
@@ -517,12 +548,7 @@ input[type="button"] {
         height: 200px;
         object-fit: cover;
         background-color: #f1f5f9;
-        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-    }
-
-    /* זום רק על התמונה כשעוברים עם העכבר על הכרטיס */
-    .card:hover img {
-        transform: scale(1.08); /* מגדיל את התמונה ב-8% */
+        transition: none;
     }
 
 .card-body {
@@ -555,24 +581,28 @@ input[type="button"] {
 
 
 /* =====================================================================
-   CARD ACTION BUTTONS (Updated to rounded pill shape)
+   CARD ACTION BUTTONS
    ===================================================================== */
 
 .card-actions {
     display: flex;
     gap: 8px;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     margin-top: 10px;
 }
 
     .card-actions .btn {
         flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 38px;
         text-align: center;
-        padding: 10px 4px;
+        padding: 10px 8px;
         font-size: 13px;
         white-space: nowrap;
-        border-radius: 999px;
+        border-radius: 8px;
         text-decoration: none;
     }
 
@@ -580,7 +610,7 @@ input[type="button"] {
         flex: 2;
         background-color: var(--color-primary);
         color: #ffffff;
-        transition: all 0.3s ease;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
         .card-actions .btn-main:hover {
@@ -590,7 +620,7 @@ input[type="button"] {
     .card-actions .btn-edit {
         background-color: var(--color-secondary);
         color: #2c3e50;
-        transition: all 0.3s ease;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
         .card-actions .btn-edit:hover {
@@ -601,7 +631,7 @@ input[type="button"] {
     .card-actions .btn-delete {
         background-color: var(--color-destructive); 
         color: #ffffff;
-        transition: all 0.3s ease;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
         .card-actions .btn-delete:hover {
@@ -621,7 +651,7 @@ input[type="button"] {
 }
 
 .success-message {
-    color: #16a34a;
+    color: #2f8f5b;
     font-size: 14px;
     margin-top: 8px;
     font-weight: 500;
@@ -645,7 +675,7 @@ table {
 }
 
     table th {
-        background-color: #f8fafc;
+        background-color: #edf2f6;
         color: var(--color-black);
         font-weight: 600;
         font-size: 14px;
@@ -667,11 +697,11 @@ table {
     }
 
     table tr:hover {
-        background-color: #f1f5f9;
+        background-color: #f3f5f6;
     }
 
 
-    /* ---------- Table buttons (Updated to rounded pill shape) ---------- */
+    /* ---------- Table buttons ---------- */
 
     table td a,
     table td button,
@@ -682,7 +712,7 @@ table {
         padding: 6px 14px;
         font-size: 13px;
         font-weight: 500;
-        border-radius: 999px;
+        border-radius: 7px;
         margin: 2px 4px;
         text-decoration: none;
         white-space: nowrap;
@@ -731,7 +761,7 @@ table {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.7);
+    background: rgba(38, 49, 61, 0.58);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -741,7 +771,7 @@ table {
 .modal-content {
     background: #ffffff;
     padding: 30px;
-    border-radius: 12px;
+    border-radius: 10px;
     max-width: 450px;
     width: 90%;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -779,7 +809,7 @@ table {
     font-size: 14px;
     font-weight: 500;
     padding: 10px 16px;
-    border-radius: 999px;
+    border-radius: 7px;
     cursor: pointer;
     font-family: inherit;
     transition: all 0.2s ease;
@@ -798,15 +828,26 @@ table {
 .nav-dropdown-menu a {
     position: relative;
     display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
     padding: 12px 16px;
     font-size: 14px;
     font-weight: 500;
-    color: #e2e8f0;
-    background-color: #0f172a;
+    color: #eef2f7;
+    background-color: rgba(255, 255, 255, 0.06);
     text-decoration: none !important;
-    border-bottom: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    border: 1px solid rgba(216, 202, 202, 0.2);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
+
+    .nav-dropdown-menu a:last-child {
+        margin-bottom: 0;
+    }
 
 
     /* Gray line spreading from the middle */
@@ -814,20 +855,22 @@ table {
     .nav-dropdown-menu a::after {
         content: "";
         position: absolute;
-        bottom: 0;
+        bottom: 4px;
         left: 50%;
         width: 0;
-        height: 3px;
-        background-color: #94a3b8;
+        height: 2px;
+        background-color: #d8caca;
+        border-radius: 0;
         transform: translateX(-50%);
-        transition: width 0.3s ease;
+        transition: width 0.3s ease, border-radius 0s linear;
     }
 
 
     /* Hover */
 
     .nav-dropdown-menu a:hover {
-        background-color: #1e293b;
+        background-color: #566b80;
+        border-color: #d8caca;
         color: #ffffff;
     }
 
@@ -835,7 +878,9 @@ table {
         /* Line spreads from middle */
 
         .nav-dropdown-menu a:hover::after {
-            width: 100%;
+            width: calc(100% - 20px);
+            border-radius: 999px;
+            transition: width 0.3s ease, border-radius 0s linear 0.3s;
         }
 
 
@@ -849,9 +894,9 @@ table {
 /* Logout */
 
 .nav-dropdown-menu a.nav-logout {
-    color: var(--color-destructive-border);
-    background-color: #0f172a;
-    border-top: 1px solid #334155;
+    color: #f3eaea;
+    background-color: rgba(139, 107, 107, 0.15);
+    border: 1px solid rgba(216, 194, 194, 0.45);
 }
 
 
@@ -859,6 +904,7 @@ table {
 
     .nav-dropdown-menu a.nav-logout:hover {
         background-color: var(--color-destructive);
+        border-color: var(--color-destructive-border);
         color: #ffffff;
     }
 
@@ -866,7 +912,9 @@ table {
         /* Logout line */
 
         .nav-dropdown-menu a.nav-logout:hover::after {
-            width: 100%;
+            width: calc(100% - 20px);
+            border-radius: 999px;
+            transition: width 0.3s ease, border-radius 0s linear 0.3s;
         }
 
 /* =====================================================================

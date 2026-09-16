@@ -108,20 +108,16 @@
     <Content Include="Admin.aspx" />
     <Content Include="App_Data\CreateDatabase.sql" />
     <Content Include="App_Data\InsertSampleCars.sql" />
-    <Content Include="BUG_FIX_SUMMARY.txt" />
     <Content Include="CarDetails.aspx" />
     <Content Include="CarMatch.aspx" />
     <Content Include="Cars.aspx" />
     <Content Include="CSS\StyleSheet.css" />
     <Content Include="Default.aspx" />
-    <Content Include="DESIGN_IMPROVEMENTS.txt" />
     <Content Include="EditCar.aspx" />
-    <Content Include="FINAL_REPORT.txt" />
     <Content Include="Global.asax" />
     <Content Include="Home.aspx" />
     <Content Include="Images\car1.png" />
     <Content Include="Images\README.txt" />
-    <Content Include="ISSUE_RESOLUTION_COMPLETE.txt" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="ManageBranches.aspx" />
@@ -129,8 +125,6 @@
     <Content Include="ManageStock.aspx" />
     <Content Include="MyFavorites.aspx" />
     <Content Include="MyOrders.aspx" />
-    <Content Include="PARSER_ERROR_FIX.txt" />
-    <Content Include="QUICK_START_GUIDE.txt" />
     <Content Include="README.txt" />
     <Content Include="Register.aspx" />
     <Content Include="UpdateProfile.aspx" />
@@ -186,6 +180,7 @@
     <Compile Include="EditCar.aspx.designer.cs">
       <DependentUpon>EditCar.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CsrfTokenHelper.cs" />
     <Compile Include="Helpers\MyAdoHelper.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -197,6 +192,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
