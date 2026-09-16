@@ -10,7 +10,7 @@ public static class PasswordHelper
 {
     private const int SaltSize = 16; // 16 bytes for salt
     private const int HashSize = 32; // 32 bytes for hash
-    private const int Iterations = 10000; // PBKDF2 iterations
+    private const int Iterations = 600_000; // PBKDF2 iterations
 
     /// <summary>
     /// יוצר hash בטוח לסיסמה עם salt
