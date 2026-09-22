@@ -67,6 +67,7 @@ public partial class CarDetails : System.Web.UI.Page
     {
         System.Web.UI.WebControls.ContentPlaceHolder cp = (System.Web.UI.WebControls.ContentPlaceHolder)Master.FindControl("MainContent");
         System.Web.UI.WebControls.Literal ltrFavBtn = (System.Web.UI.WebControls.Literal)cp.FindControl("ltrFavButton");
+        System.Web.UI.WebControls.Literal ltrSignInBtn = (System.Web.UI.WebControls.Literal)cp.FindControl("ltrSignInButton");
 
         string sql =
             "SELECT Cars.*, Branches.Name AS BranchName, Branches.City AS BranchCity, " +
@@ -178,15 +179,33 @@ public partial class CarDetails : System.Web.UI.Page
         ltrCarDetails.Text = html.ToString();
 
         // ניהול מצבי כפתורים
-        if (stock == 0 || Session["user"] == null)
+        if (stock == 0)
         {
             btnRent.Visible = false;
             rentalForm.Visible = false;
+            if (ltrSignInBtn != null)
+            {
+                ltrSignInBtn.Visible = false;
+            }
+        }
+        else if (Session["user"] == null)
+        {
+            btnRent.Visible = false;
+            rentalForm.Visible = false;
+            if (ltrSignInBtn != null)
+            {
+                ltrSignInBtn.Text = "<a href='Login.aspx?returnUrl=" + HttpUtility.UrlEncode("CarDetails.aspx?id=" + _carId) + "' class='btn' style='background:#52667a; color:#fff; font-weight:600;'>התחבר כדי להשכיר</a>";
+                ltrSignInBtn.Visible = true;
+            }
         }
         else
         {
             btnRent.Visible = true;
             rentalForm.Visible = true;
+            if (ltrSignInBtn != null)
+            {
+                ltrSignInBtn.Visible = false;
+            }
         }
 
         if (Session["user"] != null && ltrFavBtn != null)

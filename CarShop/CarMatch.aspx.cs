@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -14,8 +15,13 @@ namespace CarShop
 {
     public partial class CarMatch : System.Web.UI.Page
     {
-
-        private const string GROQ_API_KEY = "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";
+        private static string GroqApiKey
+        {
+            get
+            {
+                return (ConfigurationManager.AppSettings["GroqApiKey"] ?? string.Empty).Trim();
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -95,7 +101,11 @@ namespace CarShop
 
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GROQ_API_KEY.Trim());
+                string apiKey = GroqApiKey;
+                if (string.IsNullOrEmpty(apiKey))
+                    throw new Exception("GroqApiKey is missing in Web.config appSettings.");
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
                 client.Timeout = TimeSpan.FromSeconds(30);
 
                 using (MultipartFormDataContent form = new MultipartFormDataContent())
@@ -171,8 +181,12 @@ namespace CarShop
 
             using (HttpClient client = new HttpClient())
             {
+                string apiKey = GroqApiKey;
+                if (string.IsNullOrEmpty(apiKey))
+                    throw new Exception("GroqApiKey is missing in Web.config appSettings.");
+
                 client.DefaultRequestHeaders.Add("User-Agent", "CarRentShopApp/1.0");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GROQ_API_KEY.Trim());
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
                 client.Timeout = TimeSpan.FromSeconds(30);
 
                 List<string> modelsToTry = await GetAvailableModelsAsync(client, serializer);

@@ -36,6 +36,7 @@
         <!-- כפתור ההשכרה הישיר של ASP.NET ושאר הכפתורים -->
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:20px;">
             <asp:Button ID="btnRent" runat="server" Text="השכר רכב זה" OnClick="btnRent_Click" CssClass="btn" Style="background-color:#52667a; color:#fff; font-weight:600;" />
+            <asp:Literal ID="ltrSignInButton" runat="server"></asp:Literal>
             <asp:Literal ID="ltrFavButton" runat="server"></asp:Literal>
             <a href="Cars.aspx" class="btn" style="background:#718397; color:#fff;">חזרה לקטלוג</a>
         </div>
