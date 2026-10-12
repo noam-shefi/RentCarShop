@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Web;
 using System.Web.SessionState;
@@ -18,21 +19,22 @@ namespace CarShop
             {
                 // Make sure Password column can store hashed values
                 string ensurePasswordColumnSql = @"
-IF EXISTS (
-    SELECT 1
-    FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_NAME = 'Users'
-      AND COLUMN_NAME = 'Password'
-      AND CHARACTER_MAXIMUM_LENGTH IS NOT NULL
-      AND CHARACTER_MAXIMUM_LENGTH < 128
-)
-BEGIN
-    ALTER TABLE Users ALTER COLUMN [Password] NVARCHAR(256) NOT NULL;
-END";
+                IF EXISTS (
+                    SELECT 1
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'Users'
+                      AND COLUMN_NAME = 'Password'
+                      AND CHARACTER_MAXIMUM_LENGTH IS NOT NULL
+                      AND CHARACTER_MAXIMUM_LENGTH < 128
+                )
+                BEGIN
+                    ALTER TABLE Users ALTER COLUMN [Password] NVARCHAR(256) NOT NULL;
+                END";
                 MyAdoHelper.DoQuery(ensurePasswordColumnSql);
 
-                string adminUsername = "admin";
-                string adminPlainPassword = "123456";
+                string adminUsername = ConfigurationManager.AppSettings["AdminUsername"] ?? "admin";
+                string adminPlainPassword = ConfigurationManager.AppSettings["AdminDefaultPassword"] ?? "123456";
+                string adminEmail = ConfigurationManager.AppSettings["AdminEmail"] ?? "admin@carshop.com";
                 string adminHashedPassword = PasswordHelper.HashPassword(adminPlainPassword);
 
                 SqlParameter[] existsParams = new SqlParameter[]
@@ -50,7 +52,7 @@ END";
                         new SqlParameter("@Password", adminHashedPassword),
                         new SqlParameter("@FirstName", "מנהל"),
                         new SqlParameter("@LastName", "מערכת"),
-                        new SqlParameter("@Email", "admin@carshop.com")
+                        new SqlParameter("@Email", adminEmail)
                     };
 
                     MyAdoHelper.DoQuery(

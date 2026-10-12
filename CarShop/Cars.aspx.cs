@@ -32,6 +32,7 @@ public partial class Cars : System.Web.UI.Page
         try
         {
             string searchTerm = txtSearch != null ? txtSearch.Text.Trim().Replace("'", "''") : "";
+            string searchTermLower = searchTerm.ToLowerInvariant();
             string category = ddlCategory != null ? ddlCategory.SelectedValue.Replace("'", "''") : "";
             decimal maxPrice = 0;
             bool hasMaxPrice = false;
@@ -76,8 +77,23 @@ public partial class Cars : System.Web.UI.Page
                 "(SELECT COUNT(*) FROM Reviews r WHERE r.CarId = Cars.Id) AS ReviewCount " +
                 "FROM Cars LEFT JOIN Branches ON Cars.BranchId = Branches.Id WHERE 1=1";
 
-            if (!string.IsNullOrEmpty(searchTerm)) sql += " AND (Cars.Manufacturer LIKE '%" + searchTerm + "%' OR Cars.Model LIKE '%" + searchTerm + "%')";
-            if (!string.IsNullOrEmpty(category)) sql += " AND Cars.Category = '" + category + "'";
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                sql += " AND (Cars.Manufacturer LIKE N'%" + searchTerm + "%' OR Cars.Model LIKE N'%" + searchTerm + "%' OR Cars.Category LIKE N'%" + searchTerm + "%'";
+
+                // English/transliterated category support in free-text search
+                if (searchTermLower.Contains("gip") || searchTermLower.Contains("jeep") || searchTermLower.Contains("suv"))
+                {
+                    sql += " OR Cars.Category = N'ג''יפ'";
+                }
+                if (searchTermLower.Contains("sport"))
+                {
+                    sql += " OR Cars.Category = N'ספורט'";
+                }
+
+                sql += ")";
+            }
+            if (!string.IsNullOrEmpty(category)) sql += " AND Cars.Category = N'" + category + "'";
             if (hasMaxPrice) sql += " AND Cars.Price <= " + maxPrice.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
             // סינון תאריכים
@@ -99,6 +115,7 @@ public partial class Cars : System.Web.UI.Page
                     int carId = Convert.ToInt32(row["Id"]);
                     string manufacturer = (row["Manufacturer"] ?? "").ToString();
                     string model = (row["Model"] ?? "").ToString();
+                    string carCategory = (row["Category"] ?? "").ToString();
                     decimal pricePerDay = Convert.ToDecimal(row["Price"]);
                     string imageUrl = (row["ImageUrl"] ?? "").ToString();
                     string description = (row["Description"] ?? "").ToString();
@@ -109,7 +126,11 @@ public partial class Cars : System.Web.UI.Page
                     string ratingText = reviewCount == 0 ? "אין ביקורות עדיין" : "⭐ " + Convert.ToDouble(row["AvgRating"]).ToString("0.0") + " (" + reviewCount + ")";
                     string branchCity = row["BranchCity"] == DBNull.Value ? "" : System.Web.HttpUtility.HtmlEncode(row["BranchCity"].ToString());
 
-                    string searchAttr = System.Web.HttpUtility.HtmlEncode((manufacturer + " " + model).ToLower());
+                    string categoryAliases = "";
+                    if (carCategory == "ג'יפ") categoryAliases = " jeep gip suv";
+                    else if (carCategory == "ספורט") categoryAliases = " sport sports sportcar sport-car";
+
+                    string searchAttr = System.Web.HttpUtility.HtmlEncode((manufacturer + " " + model + " " + carCategory + categoryAliases).ToLower());
                     html.Append("<div class='card' data-search=\"" + searchAttr + "\">");
                     html.Append("<img src='" + (string.IsNullOrEmpty(imageUrl) ? "Images/car1.png" : imageUrl) + "' alt='" + System.Web.HttpUtility.HtmlEncode(manufacturer + " " + model) + "' />");
                     html.Append("<div class='card-body'><h3 style='color:#1e293b; margin-bottom:6px;'>" + System.Web.HttpUtility.HtmlEncode(manufacturer + " " + model) + "</h3>");
